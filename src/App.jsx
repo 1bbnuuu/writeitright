@@ -1,14 +1,24 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import '@/App.css'
+import Navbar from '@/components/Navbar';
+import logowrite from '@/assets/img/logowrite.png';
+import { Link } from 'react-router-dom'
+
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
     <>
-      <h1 className=' text-red-500'>woyy</h1>
+      <Navbar />
+      <main className="p-4 flex flex-col justify-center items-center mt-20 gap-20">
+        <img className=' w-full max-w-60'
+        src={logowrite}
+        alt="" />
+      <Link
+        to="/select-level"
+        className="bg-sky-400 text-white px-12 py-2 rounded-full font-bold">
+          Pilih Level
+      </Link>
+      </main>
     </>
   )
 }
