@@ -1,6 +1,5 @@
 import '@/App.css'
 import React from 'react';
-import soundIcon from '@/assets/svg/sound.svg';
 
 const Navbar = () => {
     return (

@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
 import '@/App.css';
-import Navbar from '../components/Navbar';
 
 const LevelOne = () => {
 const canvasRef = useRef(null);
@@ -27,16 +26,16 @@ const getItemPositions = () => {
     if (isMobile) {
     return {
         leftItems: [
-        { id: 1, symbol: '🍎', x: 50, y: 80, matched: false },
-        { id: 2, symbol: '🌟', x: 50, y: 160, matched: false },
-        { id: 3, symbol: '❤️', x: 50, y: 240, matched: false },
-        { id: 4, symbol: '🌙', x: 50, y: 320, matched: false }
+        { id: 1, symbol: '🍎', x: 50, y: 50, matched: false },
+        { id: 2, symbol: '🌟', x: 50, y: 150, matched: false },
+        { id: 3, symbol: '❤️', x: 50, y: 250, matched: false },
+        { id: 4, symbol: '🌙', x: 50, y: 350, matched: false }
         ],
         rightItems: [
-        { id: 3, symbol: '❤️', x: 270, y: 80, matched: false },
-        { id: 2, symbol: '🌟', x: 270, y: 160, matched: false },
-        { id: 4, symbol: '🌙', x: 270, y: 240, matched: false },
-        { id: 1, symbol: '🍎', x: 270, y: 320, matched: false }
+        { id: 3, symbol: '❤️', x: 270, y: 50, matched: false },
+        { id: 2, symbol: '🌟', x: 270, y: 150, matched: false },
+        { id: 4, symbol: '🌙', x: 270, y: 250, matched: false },
+        { id: 1, symbol: '🍎', x: 270, y: 350, matched: false }
         ]
     };
     } else {
@@ -224,17 +223,23 @@ const resetGame = () => {
 
 return (
     <>
-    <Navbar />
-    <main className="p-2 sm:p-4 flex flex-col justify-center items-center mt-4 sm:mt-10 text-orange-500">
-        <h1 className="text-xl sm:text-2xl font-bold mb-2">HUBUNGKAN</h1>
+    <main className="p-2 sm:p-4 flex flex-col justify-center items-center mt-5 text-orange-500">
+        <h1 className="text-2xl font-bold mb-2">HUBUNGKAN</h1>
         <p className="mb-4 text-sm sm:text-base text-center">Hubungkan gambar yang sama dengan menarik garis</p>
 
         {gameComplete && (
-        <div className="mb-4 p-3 sm:p-4 bg-green-100 border border-green-400 rounded text-green-700 text-center text-sm sm:text-base max-w-sm">
-            🎉 Selamat! Anda berhasil menyelesaikan semua pasangan!
+        <div className="absolute top-5">
+            <div className=" relative z-1000 mb-4 py-3 px-8 bg-green-100 border border-green-400 rounded text-green-700 text-center text-sm sm:text-base max-w-sm">
+                🎉 Selamat! Anda berhasil menyelesaikan stage ini!
+            </div>
         </div>
         )}
-
+        {/* buat jika ada beberapa yang salah muncul ini */}
+        {/* {gameNotComplete && (
+        <div className="mb-4 p-3 sm:p-4 bg-red-100 border border-red-400 rounded text-red-700 text-center text-sm sm:text-base max-w-sm">
+            🎉 Selamat! Anda berhasil menyelesaikan semua pasangan!
+        </div>
+        )} */}
         <div className="relative rounded-lg w-full max-w-[320px] md:max-w-[600px] overflow-hidden">
         <canvas
             ref={canvasRef}
@@ -282,7 +287,7 @@ return (
         ))}
         </div>
                 <div className="mb-4 flex flex-col sm:flex-row gap-2 sm:gap-4 items-center">
-        <div className="text-base sm:text-lg font-semibold">Skor: {score}</div>
+        {/* <div className="text-base sm:text-lg font-semibold">Skor: {score}</div> */}
         <button
             onClick={resetGame}
             className="px-3 py-2 sm:px-4 sm:py-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition-colors text-sm sm:text-base touch-manipulation"
@@ -290,6 +295,20 @@ return (
             Reset Game
         </button>
         </div>
+        <footer
+        className="flex w-full justify-between px-5"
+        >
+            <div>
+                <svg className="w-10 h-10 text-sky-400" width="20" height="17" viewBox="0 0 20 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M20 16.918C17.5533 13.9313 15.3807 12.2367 13.482 11.834C11.5833 11.4313 9.77567 11.3705 8.059 11.6515V17L0 8.2725L8.059 0V5.0835C11.2333 5.1085 13.932 6.24733 16.155 8.5C18.3777 10.7527 19.6593 13.5587 20 16.918Z" fill="#0084FF"/>
+                </svg>
+            </div>
+            <div>
+                <svg className="w-10 h-10 text-sky-400" width="20" height="17" viewBox="0 0 20 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M0 16.918C2.44667 13.9313 4.61933 12.2367 6.518 11.834C8.41667 11.4313 10.2243 11.3705 11.941 11.6515V17L20 8.2725L11.941 0V5.0835C8.76667 5.1085 6.068 6.24733 3.845 8.5C1.62233 10.7527 0.340666 13.5587 0 16.918Z" fill="#0084FF"/>
+                </svg>
+            </div>
+        </footer>
     </main>
     </>
 );
