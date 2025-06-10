@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ClickSound } from '@/utilities/ClickSound';
 
 const LevelOne = () => {
+const navigate = useNavigate();
 const canvasRef = useRef(null);
 const [isDrawing, setIsDrawing] = useState(false);
 const [currentLine, setCurrentLine] = useState(null);
@@ -11,7 +12,6 @@ const [score, setScore] = useState(0);
 const [gameComplete, setGameComplete] = useState(false);
 const [isMobile, setIsMobile] = useState(true);
 const [currentStage, setCurrentStage] = useState(1);
-const [allStagesComplete, setAllStagesComplete] = useState(false);
 
 const symbolCollection = [
     '🍎', '🌟', '❤️', '🌙', '🐱', '🌸', '⚡', '🎵', 
@@ -20,7 +20,7 @@ const symbolCollection = [
     '🦄', '🌞', '🐠', '🌻', '🎀', '🔮', '💫', '🌷'
 ];
 
-const totalStages = 5;
+const totalStages = 2;
 
 useEffect(() => {
     const checkMobile = () => {
@@ -39,13 +39,11 @@ const generateRandomSymbols = (count) => {
 };
 
 const getItemPositions = (stage) => {
-    // Stage 1-5: tantangan bertambah sesuai stage, stage 6+ tetap 5 tantangan
     const itemCount = Math.min(stage, 5);
     const symbols = generateRandomSymbols(itemCount);
     
     const rightSymbols = [...symbols].sort(() => Math.random() - 0.5);
     
-    // Mobile-first design dengan layout yang lebih playful
     const leftItems = symbols.map((symbol, index) => ({
         id: index + 1,
         symbol: symbol,
@@ -82,21 +80,6 @@ useEffect(() => {
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Draw background pattern
-    // ctx.fillStyle = '#FFF7ED';
-    // ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
-    // Add some playful dots
-    // ctx.fillStyle = '#FED7AA';
-    // for (let i = 0; i < 20; i++) {
-    //     const x = Math.random() * canvas.width;
-    //     const y = Math.random() * canvas.height;
-    //     ctx.beginPath();
-    //     ctx.arc(x, y, 2, 0, 2 * Math.PI);
-    //     ctx.fill();
-    // }
-
-    // Draw connection lines
     lines.forEach(line => {
         ctx.strokeStyle = line.correct ? '#10B981' : '#EF4444';
         ctx.lineWidth = 4;
@@ -110,7 +93,6 @@ useEffect(() => {
         ctx.shadowBlur = 0;
     });
 
-    // Draw current line being drawn
     if (currentLine) {
         ctx.strokeStyle = '#F97316';
         ctx.lineWidth = 4;
@@ -227,7 +209,9 @@ const handleEnd = (e) => {
             if (totalMatched === leftItemsState.length) {
                 setGameComplete(true);
                 if (currentStage === totalStages) {
-                    setAllStagesComplete(true);
+                    setTimeout(() => {
+                        navigate('/completion');
+                    }, 2000); // Delay 2 detik
                 }
             }
         }
@@ -277,35 +261,8 @@ const handleForwardClick = () => {
     }
 };
 
-if (allStagesComplete) {
-    return (
-        <div className="min-h-screen bg-gradient-to-br from-yellow-200 via-pink-200 to-purple-300 flex flex-col justify-center items-center text-center p-6">
-            <div className="bg-white rounded-3xl p-8 shadow-2xl transform scale-105 flex flex-col gap-2">
-                <div className="text-6xl mb-4">🎉</div>
-                <h1 className="text-3xl font-bold text-orange-500 mb-4">SELAMAT!</h1>
-                <p className="text-gray-600 mb-6">Anda telah menyelesaikan semua stage! Hebat sekali!</p>
-                <button 
-                    className="bg-gradient-to-r from-orange-400 to-pink-400 text-white py-3 px-8 rounded-full text-lg font-semibold shadow-lg transform hover:scale-105 transition-all duration-200"
-                    onClick={() => window.location.reload()}
-                >
-                    <span>Main Lagi 🎮</span>
-                </button>
-                <Link to="/select-level">
-                <button className="bg-orange-500 text-white w-full py-3 px-8 rounded-full font-semibold shadow-lg text-lg hover:bg-orange-600 transition-colors"
-                >🏠 pilih level</button>
-                </Link>
-            </div>
-        </div>
-    );
-}
-
-const getCurrentChallengeCount = (stage) => {
-    return Math.min(stage, 5);
-};
-
 return (
     <div className=" min-h-screen bg-gradient-to-br from-blue-200 via-purple-200 to-pink-200 flex flex-col">
-        {/* Header */}
         <div className="bg-white/80 backdrop-blur-sm shadow-lg p-4 rounded-b-3xl">
             <h1 className="text-2xl font-bold text-center text-orange-500 mb-2">
                 HUBUNGKAN GAMBAR
@@ -317,7 +274,6 @@ return (
             </div>
         </div>
 
-        {/* Success Message */}
         <div className="absolute w-full">
         {gameComplete && (
             <div className="relative z-20">
@@ -326,9 +282,13 @@ return (
                     <p className="text-green-700 font-bold">
                         Selamat! Stage {currentStage} selesai!
                     </p>
-                    {currentStage < totalStages && (
+                    {currentStage < totalStages ? (
                         <p className="text-green-600 text-sm mt-1">
                             Tap panah kanan untuk lanjut →
+                        </p>
+                    ) : (
+                        <p className="text-green-600 text-sm mt-1">
+                            Menuju halaman selesai...
                         </p>
                     )}
                 </div>
@@ -336,7 +296,6 @@ return (
         )}
         </div>
 
-        {/* Game Canvas */}
         <div className="flex-1 flex justify-center items-center p-4">
             <div className="relative z-10 bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl overflow-hidden">
                 <canvas
@@ -358,7 +317,6 @@ return (
                     onTouchCancel={handleCancel}
                 />
 
-                {/* Left Items */}
                 {leftItemsState.map(item => (
                     <div
                         key={`left-${item.id}`}
@@ -381,7 +339,6 @@ return (
                     </div>
                 ))}
 
-                {/* Right Items */}
                 {rightItemsState.map(item => (
                     <div
                         key={`right-${item.id}`}
@@ -406,7 +363,6 @@ return (
             </div>
         </div>
 
-        {/* Controls */}
         <div className="p-4">
             <div className="flex justify-center">
                 <button
@@ -417,7 +373,6 @@ return (
                 </button>
             </div>
 
-            {/* Navigation */}
             <div className="flex justify-between items-center px-4">
                 <button 
                     onClick={() => {handleBackClick();ClickSound()}}
