@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import completeStageSound from '@/assets/sound/completestage.wav';
 import { ClickSound } from '@/utilities/ClickSound';
 
 const LevelOne = () => {
@@ -22,6 +23,18 @@ const symbolCollection = [
 
 const totalStages = 5;
 
+const playCompleteStageMusic = () => {
+    try {
+        const audio = new Audio(completeStageSound);
+        audio.volume = 0.7;
+        audio.play().catch(error => {
+            console.log('Audio play failed:', error);
+        });
+    } catch (error) {
+        console.log('Audio creation failed:', error);
+    }
+};
+
 useEffect(() => {
     const checkMobile = () => {
         setIsMobile(window.innerWidth <= 768);
@@ -32,7 +45,11 @@ useEffect(() => {
     
     return () => window.removeEventListener('resize', checkMobile);
 }, []);
-
+useEffect(() => {
+    if (gameComplete) {
+        playCompleteStageMusic();
+    }
+}, [gameComplete]);
 const generateRandomSymbols = (count) => {
     const shuffled = [...symbolCollection].sort(() => Math.random() - 0.5);
     return shuffled.slice(0, count);
@@ -211,7 +228,7 @@ const handleEnd = (e) => {
                 if (currentStage === totalStages) {
                     setTimeout(() => {
                         navigate('/completion');
-                    }, 2000); // Delay 2 detik
+                    }, 1000); // Delay 2 detik
                 }
             }
         }
