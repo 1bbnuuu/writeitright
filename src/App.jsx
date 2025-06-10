@@ -1,42 +1,55 @@
 import { useState } from 'react'
 import '@/App.css'
 import Navbar from '@/components/Navbar';
-import logowrite from '@/assets/img/logowrite.png';
+import introVideo from '@/assets/video/logo.mp4';
 import { Link } from 'react-router-dom'
+import { ClickSound } from '@/utilities/ClickSound';
 
 
 function App() {
     const [isHovered, setIsHovered] = useState(false);
+        const handlePlaySound = () => {
+        const audio = new Audio(clickSound);
+        audio.play();
+        };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-amber-50 to-amber-100">
+        <div className="min-h-screen bg-white">
             <Navbar />
-            
-            <main className="flex flex-col justify-center items-center min-h-[calc(100vh-80px)] px-4 gap-16">
-                <div className="transform hover:scale-105 transition-transform duration-300">
-                  <img 
-                    className=''
-                    src={logowrite}
-                    alt="Sound Icon" />
+            <main className="flex flex-col justify-center items-center min-h-[calc(100vh-80px)] px-4 gap-5">
+                <div>
+                    <video
+                        src={introVideo}
+                        autoPlay
+                        muted
+                        loop
+                        playsInline
+                        className="w-full max-w-[400px]">
+                    </video>
                 </div>
 
                 <Link
-                  to="/select-level">
-                  <button
-                    onMouseEnter={() => setIsHovered(true)}
-                    onMouseLeave={() => setIsHovered(false)}
+                to="/select-level" onClick={ClickSound}> 
+                <button
                     className="group relative bg-gradient-to-r from-sky-400 to-sky-500 hover:from-sky-500 hover:to-sky-600 text-white px-12 py-4 rounded-full font-bold text-xl shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 overflow-hidden"
-                  >
+                >
 
                     <div className="relative z-10 flex items-center gap-3">
                         <span>Pilih Level</span>
-                        <div className={`transform transition-transform duration-300 ${isHovered ? 'translate-x-2' : ''}`}>
+                        <div className="transform transition-transform duration-300 translate-x-2">
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                             </svg>
                         </div>
                     </div>
-                  </button>
+                </button>
+                </Link>
+                <Link to="/about">
+                <button
+                    className="group relative bg-gradient-to-r from-sky-400 to-sky-500 hover:from-sky-500 hover:to-sky-600 text-white px-12 py-4 rounded-full font-bold text-xl shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 overflow-hidden"
+                >
+                    About
+                </button>
                 </Link>
             </main>
         </div>
