@@ -13,7 +13,7 @@ const Completion = () => {
                         <button 
                             onClick={ClickSound}
                         >
-                            <span>Main Lagi 🎮</span>
+                            <span>🎮 Main Lagi</span>
                         </button>
                     </Link>
                     
