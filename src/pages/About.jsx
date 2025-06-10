@@ -10,7 +10,7 @@ const About = () => {
                     {/* Hero Section */}
                     <div className="text-center mb-16">
                         <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
-                            About Me
+                            Tentang Kami
                         </h1>
                         <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full"></div>
                     </div>
@@ -50,7 +50,7 @@ const About = () => {
                                     <div className="space-y-3">
                                         <div className="flex justify-between">
                                             <span className="text-gray-600">NIM:</span>
-                                            <span className="font-medium text-gray-800">C2255201117</span>
+                                            <span className="font-medium text-gray-800">C2255201116</span>
                                         </div>
                                     </div>
                                 </div>
@@ -82,7 +82,7 @@ const About = () => {
                                     <div className="space-y-3">
                                         <div className="flex justify-between">
                                             <span className="text-gray-600">NIM:</span>
-                                            <span className="font-medium text-gray-800">C2255201118</span>
+                                            <span className="font-medium text-gray-800">C2255201117</span>
                                         </div>
                                     </div>
                                 </div>

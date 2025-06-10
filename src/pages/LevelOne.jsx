@@ -1,11 +1,14 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import completeStageSound from '@/assets/sound/completestage.wav';
-import { ClickSound } from '@/utilities/ClickSound';
+import { ClickSound,Tutor1,pauseTutor1} from '@/utilities/ClickSound';
+import lvl1 from '@/assets/sound/dub_lvl1.mp3';
+import vtutor1 from "@/assets/video/lvl1.mp4"
 
 const LevelOne = () => {
 const navigate = useNavigate();
 const canvasRef = useRef(null);
+const videoRef = useRef(null);
 const [isDrawing, setIsDrawing] = useState(false);
 const [currentLine, setCurrentLine] = useState(null);
 const [lines, setLines] = useState([]);
@@ -13,6 +16,8 @@ const [score, setScore] = useState(0);
 const [gameComplete, setGameComplete] = useState(false);
 const [isMobile, setIsMobile] = useState(true);
 const [currentStage, setCurrentStage] = useState(1);
+const [showTutorial, setShowTutorial] = useState(true);
+const [hasSeenTutorial, setHasSeenTutorial] = useState(false);
 
 const symbolCollection = [
     '🍎', '🌟', '❤️', '🌙', '🐱', '🌸', '⚡', '🎵', 
@@ -35,6 +40,40 @@ const playCompleteStageMusic = () => {
     }
 };
 
+    const audioRef = useRef(null);
+
+    useEffect(() => {
+        const audio = new Audio(lvl1);
+        audioRef.current = audio;
+        audio.play();
+
+        return () => {
+            audio.pause();
+            audio.currentTime = 0;
+        };
+    }, []);
+
+const closeTutorial = () => {
+    setShowTutorial(false);
+    setHasSeenTutorial(true);
+    if (videoRef.current) {
+        videoRef.current.pause();
+        videoRef.current.currentTime = 0;
+    }
+    ClickSound();
+    pauseTutor1();
+}
+const skipTutorial = () => {
+    pauseTutor1();
+    closeTutorial();
+};
+
+const openTutorial = () => {
+    setShowTutorial(true);
+    ClickSound();
+    Tutor1();
+};
+
 useEffect(() => {
     const checkMobile = () => {
         setIsMobile(window.innerWidth <= 768);
@@ -45,11 +84,21 @@ useEffect(() => {
     
     return () => window.removeEventListener('resize', checkMobile);
 }, []);
+
 useEffect(() => {
     if (gameComplete) {
         playCompleteStageMusic();
     }
 }, [gameComplete]);
+
+useEffect(() => {
+    if (showTutorial && videoRef.current) {
+        videoRef.current.play().catch(error => {
+            console.log('Video autoplay failed:', error);
+        });
+    }
+}, [showTutorial]);
+
 const generateRandomSymbols = (count) => {
     const shuffled = [...symbolCollection].sort(() => Math.random() - 0.5);
     return shuffled.slice(0, count);
@@ -228,7 +277,7 @@ const handleEnd = (e) => {
                 if (currentStage === totalStages) {
                     setTimeout(() => {
                         navigate('/completion');
-                    }, 1000); // Delay 2 detik
+                    }, 1000);
                 }
             }
         }
@@ -279,7 +328,73 @@ const handleForwardClick = () => {
 };
 
 return (
-    <div className=" min-h-screen bg-gradient-to-br from-blue-200 via-purple-200 to-pink-200 flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-blue-200 via-purple-200 to-pink-200 flex flex-col">
+        {/* Video Tutorial Popup */}
+        {showTutorial && (
+            <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                <div className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden">
+                    {/* Header */}
+                    <div className="bg-gradient-to-r from-orange-400 to-pink-400 p-4 text-white">
+                        <div className="flex items-center justify-between">
+                            <h2 className="text-xl font-bold flex items-center gap-2">
+                                🎯 Tutorial Game
+                            </h2>
+                            <button
+                                onClick={closeTutorial}
+                                className="bg-white/20 hover:bg-white/30 rounded-full p-2 transition-colors"
+                            >
+                                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div className="p-4">
+                        <div className="bg-gray-100 rounded-2xl overflow-hidden mb-4">
+                            <video
+                                src={vtutor1}
+                                autoPlay
+                                muted
+                                loop
+                            >
+                                <p className="p-4 text-center text-gray-600">
+                                    Browser Anda tidak mendukung pemutaran video.
+                                </p>
+                            </video>
+                        </div>
+
+                        <div className="text-center mb-6">
+                            <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                                Cara Bermain:
+                            </h3>
+                            <div className="text-sm text-gray-600 space-y-2">
+                                <p>🎯 Hubungkan gambar yang sama di sisi kiri dan kanaSn</p>
+                                <p>✨ Tarik garis dari gambar kiri ke gambar kanan yang cocok</p>
+                                <p>🏆 Selesaikan semua pasangan untuk menyelesaikan stage</p>
+                            </div>
+                        </div>
+
+                        <div className="flex gap-3">
+                            <button
+                                onClick={skipTutorial}
+                                className="flex-1 bg-gray-500 hover:bg-gray-600 text-white py-3 px-6 rounded-full font-semibold transition-colors"
+                            >
+                                Skip Tutorial
+                            </button>
+                            <button
+                                onClick={closeTutorial}
+                                className="flex-1 bg-gradient-to-r from-orange-400 to-pink-400 hover:from-orange-500 hover:to-pink-500 text-white py-3 px-6 rounded-full font-semibold transition-all transform hover:scale-105"
+                            >
+                                Mulai Game! 🎮
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )}
+
+        {/* Header */}
         <div className="bg-white/80 backdrop-blur-sm shadow-lg p-4 rounded-b-3xl">
             <h1 className="text-2xl font-bold text-center text-orange-500 mb-2">
                 HUBUNGKAN GAMBAR
@@ -288,13 +403,23 @@ return (
                 <div className="bg-orange-100 px-3 py-1 rounded-full">
                     <span className="text-orange-600 font-semibold">Stage {currentStage}/{totalStages}</span>
                 </div>
+                {/* Button untuk membuka tutorial lagi */}
+                {hasSeenTutorial && (
+                    <button
+                        onClick={openTutorial}
+                        className="bg-blue-100 hover:bg-blue-200 px-3 py-1 rounded-full text-blue-600 text-xs font-semibold transition-colors"
+                    >
+                        🎯 Tutorial
+                    </button>
+                )}
             </div>
         </div>
 
+        {/* Game Complete Notification */}
         <div className="absolute w-full">
         {gameComplete && (
             <div className="relative z-20">
-                <div className=" bg-green-100 border-2 border-green-300 rounded-b-3xl p-4 text-center shadow-lg">
+                <div className="bg-green-100 border-2 border-green-300 rounded-b-3xl p-4 text-center shadow-lg">
                     <div className="text-3xl mb-2">🎉</div>
                     <p className="text-green-700 font-bold">
                         Selamat! Stage {currentStage} selesai!
@@ -313,6 +438,7 @@ return (
         )}
         </div>
 
+        {/* Game Canvas */}
         <div className="flex-1 flex justify-center items-center p-4">
             <div className="relative z-10 bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl overflow-hidden">
                 <canvas
@@ -334,6 +460,7 @@ return (
                     onTouchCancel={handleCancel}
                 />
 
+                {/* Left Items */}
                 {leftItemsState.map(item => (
                     <div
                         key={`left-${item.id}`}
@@ -356,6 +483,7 @@ return (
                     </div>
                 ))}
 
+                {/* Right Items */}
                 {rightItemsState.map(item => (
                     <div
                         key={`right-${item.id}`}
@@ -380,6 +508,7 @@ return (
             </div>
         </div>
 
+        {/* Controls */}
         <div className="p-4">
             <div className="flex justify-center">
                 <button
@@ -425,7 +554,6 @@ return (
                     </svg>
                 </button>
             </div>
-            
         </div>
     </div>
 );
