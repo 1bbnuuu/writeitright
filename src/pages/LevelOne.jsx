@@ -20,7 +20,7 @@ const symbolCollection = [
     '🦄', '🌞', '🐠', '🌻', '🎀', '🔮', '💫', '🌷'
 ];
 
-const totalStages = 2;
+const totalStages = 5;
 
 useEffect(() => {
     const checkMobile = () => {
