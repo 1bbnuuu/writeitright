@@ -1,18 +1,10 @@
-import { useState } from 'react'
-import '@/App.css'
-import Navbar from '@/components/Navbar';
-import introVideo from '@/assets/video/logo.mp4';
-import { Link } from 'react-router-dom'
-import { ClickSound } from '@/utilities/ClickSound';
-
+import "@/App.css";
+import Navbar from "@/components/Navbar";
+import introVideo from "@/assets/video/logo.mp4";
+import { Link } from "react-router-dom";
+import { ClickSound } from "@/utilities/ClickSound";
 
 function App() {
-    const [isHovered, setIsHovered] = useState(false);
-        const handlePlaySound = () => {
-        const audio = new Audio(clickSound);
-        audio.play();
-        };
-
     return (
         <div className="min-h-screen bg-white">
             <Navbar />
@@ -24,27 +16,21 @@ function App() {
                         muted
                         loop
                         playsInline
-                        className="w-full max-w-[400px]">
-                    </video>
+                        className="w-full max-w-[400px]"
+                    ></video>
                 </div>
 
-                <Link
-                to="/select-level" onClick={ClickSound}> 
-                <button
-                    className="group relative bg-gradient-to-r from-sky-400 to-sky-500 hover:from-sky-500 hover:to-sky-600 text-white px-12 py-4 rounded-full font-bold text-xl shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 overflow-hidden"
-                >
-
-                    <div className="relative z-10 flex items-center gap-3">
-                        <span>Pilih Level</span>
-                    </div>
-                </button>
+                <Link to="/select-level" onClick={ClickSound}>
+                    <button className="group relative bg-gradient-to-r from-sky-400 to-sky-500 hover:from-sky-500 hover:to-sky-600 text-white px-12 py-4 rounded-full font-bold text-xl shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 overflow-hidden">
+                        <div className="relative z-10 flex items-center gap-3">
+                            <span>Pilih Level</span>
+                        </div>
+                    </button>
                 </Link>
                 <Link to="/about">
-                <button
-                    className="group relative bg-gradient-to-r from-sky-400 to-sky-500 hover:from-sky-500 hover:to-sky-600 text-white px-12 py-4 rounded-full font-bold text-xl shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 overflow-hidden"
-                >
-                    Copyrights
-                </button>
+                    <button className="group relative bg-gradient-to-r from-sky-400 to-sky-500 hover:from-sky-500 hover:to-sky-600 text-white px-12 py-4 rounded-full font-bold text-xl shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 overflow-hidden">
+                        Copyrights
+                    </button>
                 </Link>
             </main>
         </div>
@@ -52,3 +38,4 @@ function App() {
 }
 
 export default App;
+
